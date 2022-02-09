@@ -55,7 +55,6 @@ public class HtmlValidatorTest {
 
             buffer.append((char) ch);
         }
-
         return buffer.toString();
     }
 
@@ -206,7 +205,6 @@ public class HtmlValidatorTest {
         Queue<HtmlTag>tags =HtmlTag.tokenize(address);
         HtmlValidator validator = new HtmlValidator(tags);
 
-
         Assert.assertEquals(expectedOutputToString(expected),validatorOutputToString(validator));
 	}
 
@@ -222,64 +220,123 @@ public class HtmlValidatorTest {
         Queue<HtmlTag>tags =HtmlTag.tokenize(address);
         HtmlValidator validator = new HtmlValidator(tags);
 
-
         Assert.assertEquals(expectedOutputToString(expected),validatorOutputToString(validator));
 	}
 
-	/**
+	/*
 	 * This remove test1 should test my remove all method
-     * using input_html/test1.html and the remove method
+     * using input_html/test1.html and the removeAll method
 	 * To remove the <i>,</i> of test 1
 	 */
 	@Test
 	public void myRemoveAllTest1() throws IOException{
-//        String test ="b";
-//        String address = readCompleteFileOrURL("input_html/test1.html");
-//        Queue<HtmlTag>tags =HtmlTag.tokenize(address);
-//        HtmlValidator validator = new HtmlValidator(tags);
-//        validator.removeAll("i");
-//        String result =validator.getTags();
+        //test list
         Queue<HtmlTag> tags = new LinkedList<>();
         tags.add(HtmlTag.parse("b"));
         tags.add(HtmlTag.parse("/b"));
         tags.add(HtmlTag.parse("i"));
         tags.add(HtmlTag.parse("/i"));
-        System.out.println(tags);
-//        Assert.assertEquals(test,result);
+
+        HtmlValidator test = new HtmlValidator(tags);
+
+        //expected output list
+        Queue<HtmlTag> expected = new LinkedList<>();
+        expected.add(HtmlTag.parse("b"));
+        expected.add(HtmlTag.parse("/b"));
+
+        test.removeAll("i");
+
+        Assert.assertEquals(test.getTags(),expected);
 	}
 
-	/**
-	 * Add your own test to test your removeAll method
-	 * Add your own comment here:
+	/*
+     * This remove test2 should test my remove all method
+     * using removeAll method to remove all elements in a list
 	 */
 	@Test
 	public void myRemoveAllTest2(){
+        //test list
+        Queue<HtmlTag> tags = new LinkedList<>();
+        tags.add(HtmlTag.parse("b"));
+        tags.add(HtmlTag.parse("/b"));
+        tags.add(HtmlTag.parse("i"));
+        tags.add(HtmlTag.parse("/i"));
+        tags.add(HtmlTag.parse("a"));
+        tags.add(HtmlTag.parse("/a"));
+        tags.add(HtmlTag.parse("html"));
+        tags.add(HtmlTag.parse("/html"));
 
+        HtmlValidator test = new HtmlValidator(tags);
+
+        //expected output list
+        Queue<HtmlTag> expected = new LinkedList<>();
+
+        test.removeAll("b");
+        test.removeAll("a");
+        test.removeAll("i");
+        test.removeAll("html");
+
+        Assert.assertEquals(test.getTags(),expected);
 	}
 
-	/**
-	 * Add your own test to test your removeAll method
-	 * Add your own comment here:
+	/*
+	 *removeAllTest3 should expect a false output
+	 * when testing the removeAll method to see if there are changes being done
 	 */
 	@Test
 	public void myRemoveAllTest3(){
+        //test list
+        Queue<HtmlTag> tags = new LinkedList<>();
+        tags.add(HtmlTag.parse("b"));
+        tags.add(HtmlTag.parse("/b"));
+        tags.add(HtmlTag.parse("i"));
+        tags.add(HtmlTag.parse("/i"));
 
+        HtmlValidator test = new HtmlValidator(tags);
+
+        //expected output list
+        Queue<HtmlTag> expected = new LinkedList<>();
+        expected.add(HtmlTag.parse("b"));
+        expected.add(HtmlTag.parse("/b"));
+        expected.add(HtmlTag.parse("i"));
+        expected.add(HtmlTag.parse("/i"));
+
+        test.removeAll("i");
+
+        Assert.assertEquals(false, test.getTags().equals(expected));
 	}
 
-    /**
-     * Add your own test to test your removeAll method
-     * Add your own comment here:
+    /*
+     *This test should expect a false value
+     *when testing to see if the removeAll method would remove both element of the 2 tags
+     * <i>, </i>
      */
     @Test
     public void myRemoveAllTest4(){
+        //test list
+        Queue<HtmlTag> tags = new LinkedList<>();
+        tags.add(HtmlTag.parse("b"));
+        tags.add(HtmlTag.parse("/b"));
+        tags.add(HtmlTag.parse("i"));
+        tags.add(HtmlTag.parse("/i"));
 
+        HtmlValidator test = new HtmlValidator(tags);
+
+        //expected output list
+        Queue<HtmlTag> expected = new LinkedList<>();
+        expected.add(HtmlTag.parse("b"));
+        expected.add(HtmlTag.parse("/b"));
+        expected.add(HtmlTag.parse("/i"));
+
+        test.removeAll("i");
+
+        Assert.assertEquals(false, test.getTags().equals(expected));
     }
 
-    //FEEL FREE TO ADD MORE TESTS HERE
 
-    /**
-     * An HtmlValidatorTest.HtmlTag object represents an HTML tag, such as <b> or </table>.
-     */
+
+
+
     public static class HtmlTag {
         // fields
         private final String element;
@@ -491,24 +548,10 @@ public class HtmlValidatorTest {
             if(tags == null){
                 throw new IllegalArgumentException("");
             }
-//        Queue<HtmlTag> copiedTags = (Queue<HtmlTag>) tags.clone();
-//
-//        return copiedTags;
             return tags;
         }
 
 
-        /* Remove all tags matching element
-           @param element the type of tag to remove
-         */
-//    public void removeAll(String element) {
-//        if (element == null) throw new IllegalArgumentException();
-//        tags.removeIf(tag -> tag.getElement().equalsIgnoreCase(element)) {
-//            filtered.add(tag);
-//        }
-//    }
-//
-//    tags =filteredtags;
         public void removeAll(String element){
             if(element == null) throw new IllegalArgumentException();
 

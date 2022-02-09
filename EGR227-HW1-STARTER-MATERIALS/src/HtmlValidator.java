@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class HtmlValidator implements Cloneable {
+public class HtmlValidator {
 
     private static final String INDENTATION_MARKER = "    "; //4 white spaces
 
@@ -42,10 +42,7 @@ public class HtmlValidator implements Cloneable {
         if(tags == null){
             throw new IllegalArgumentException("");
         }
-//        Queue<HtmlTag> copiedTags = (Queue<HtmlTag>) tags.clone();
-//
-//        return copiedTags;
-        return tags;
+        return new LinkedList<>(tags);
     }
 
 
@@ -56,9 +53,15 @@ public class HtmlValidator implements Cloneable {
     public void removeAll(String element){
         if(element == null) throw new IllegalArgumentException();
 
-        for(int i =0; i< tags.size(); i++){
-            tags.removeIf(tag -> tag.getElement().equalsIgnoreCase(element));
+        Queue<HtmlTag> filteredTags = new LinkedList<>();
+        for (HtmlTag tag : tags) {
+            if (!tag.getElement().equalsIgnoreCase(element)) {
+                filteredTags.add(tag);
+            }
         }
+        tags = filteredTags;
+//a more complex method
+//        tags.removeIf(tag -> tag.getElement().equalsIgnoreCase(element));
         System.out.println(getTags());
     }
 
@@ -71,7 +74,6 @@ public class HtmlValidator implements Cloneable {
     // Tags that are not empty
     // Work with the unclosed tags afterwards
     public void validate(){
-        int indent = 0;
         Stack<HtmlTag> openTags = new Stack<HtmlTag>();
         HtmlTag currentTag = null;
         for (int i =0; i <tags.size(); i++){
@@ -80,15 +82,13 @@ public class HtmlValidator implements Cloneable {
             currentTag = tags.remove();
             tags.add(currentTag);
             if(currentTag.isSelfClosing()){
-                printWithIndentation(currentTag,indent);
+                printWithIndentation(currentTag, openTags.size());
             } else if (currentTag.isOpenTag()){
                 openTags.push(currentTag);
-                printWithIndentation(currentTag, indent);
-                indent++;
+                printWithIndentation(currentTag, openTags.size());
             } else{
                 if(!openTags.isEmpty() && currentTag.matches(openTags.peek())){
-                    indent--;
-                    printWithIndentation(currentTag, indent);
+                    printWithIndentation(currentTag, openTags.size());
                     openTags.pop();
                 } else {
                     System.out.println("Error unexpected tag: " + currentTag);
