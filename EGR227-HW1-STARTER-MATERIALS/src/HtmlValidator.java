@@ -22,8 +22,7 @@ public class HtmlValidator {
     }
 
 
-    /*Add a tag to the end of the HtmlValidator
-     */
+    /*Add a tag to the end of the HtmlValidator*/
     public void addTag(HtmlTag tag) {
         if (tag == null) {
             throw new IllegalArgumentException("Cannot add a null tag.");
@@ -34,8 +33,7 @@ public class HtmlValidator {
 
 
     /*Get a deep copy of the tags in the HtmlValidator
-      @return A deep copy of the tags in the HmtlValidator
-     */
+      @return A deep copy of the tags in the HmtlValidator*/
     public Queue<HtmlTag> getTags() {
         // return a deep copy of the tags - the data structure stored in memory
         // ToDo: what data structure best suits this copy?
@@ -47,9 +45,7 @@ public class HtmlValidator {
 
 
     /* Remove all tags matching element
-       @param element the type of tag to remove
-     */
-
+       @param element the type of tag to remove*/
     public void removeAll(String element){
         if(element == null) throw new IllegalArgumentException();
 
@@ -77,8 +73,6 @@ public class HtmlValidator {
         Stack<HtmlTag> openTags = new Stack<HtmlTag>();
         HtmlTag currentTag = null;
         for (int i =0; i <tags.size(); i++){
-            //Todo: define the htmlTag and how to cycle through the stack
-            //Todo: give the needed functionality to move from stack to queue
             currentTag = tags.remove();
             tags.add(currentTag);
             if(currentTag.isSelfClosing()){
@@ -86,13 +80,11 @@ public class HtmlValidator {
             } else if (currentTag.isOpenTag()){
                 openTags.push(currentTag);
                 printWithIndentation(currentTag, openTags.size());
-            } else{
-                if(!openTags.isEmpty() && currentTag.matches(openTags.peek())){
-                    printWithIndentation(currentTag, openTags.size());
-                    openTags.pop();
-                } else {
-                    System.out.println("Error unexpected tag: " + currentTag);
-                }
+            } else if(!openTags.isEmpty() && currentTag.matches(openTags.peek())){
+                openTags.pop();
+                printWithIndentation(currentTag, openTags.size());
+            } else {
+                System.out.println("Error unexpected tag: " + currentTag);
             }
         }
         while(!openTags.isEmpty()){
